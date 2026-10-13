@@ -1235,7 +1235,22 @@ window.addDoc(
         "matrixLogs"
     ),
     record
-);
+)
+.then(() => {
+
+    console.log(
+        "Firebase Save Success ✅"
+    );
+
+})
+.catch(error => {
+
+    console.error(
+        "Firebase Save Failed ❌",
+        error
+    );
+
+});
 
 document.getElementById(
     "saveStatus"
