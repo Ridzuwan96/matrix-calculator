@@ -333,61 +333,6 @@ row.style.display =
 
 }
 
-    const logs =
-JSON.parse(localStorage.getItem("matrixLogs")) || [];
-
-const tbody =
-document.querySelector("#historyTable tbody");
-
-document.getElementById("recordCount")
-.innerHTML =
-`Total Record: ${logs.length.toLocaleString()}`;
-
-console.log(logs);
-
-[...logs].reverse().forEach((log,index) => {
-
-    const row =
-    document.createElement("tr");
-
-    row.dataset.mode =
-    log.mode || "";
-
-row.dataset.date =
-(log.dateTime || "").split(",")[0];
-
-    row.innerHTML = `
-
-        <td>
-            <input
-                type="checkbox"
-                class="recordCheck"
-                value="${index}">
-        </td>
-
-        <td>${log.name || ""}</td>
-
-        <td>
-            ${log.mode === "dn"
-                ? "DN PROCESS"
-                : "RECOUNT PROCESS"}
-        </td>
-
-        <td>${log.dnNo || ""}</td>
-        <td>${log.boxId || ""}</td>
-        <td>${log.unitTray || ""}</td>
-        <td>${log.boxQty || ""}</td>
-        <td>${log.childQty || ""}</td>
-        <td>${log.rowQty || ""}</td>
-        <td>${log.motherTotal || ""}</td>
-        <td>${log.childTotal || ""}</td>
-        <td>${log.dateTime || ""}</td>
-
-    `;
-
-    tbody.appendChild(row);
-
-});
 
 function toggleSelectAll(){
 
@@ -652,5 +597,132 @@ setTimeout(() => {
 
 
 </script>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+const firebaseConfig = {
+
+    apiKey: "API_KEY_KAU",
+
+    authDomain:
+    "dhl-matrix-calculator.firebaseapp.com",
+
+    projectId:
+    "dhl-matrix-calculator",
+
+    storageBucket:
+    "dhl-matrix-calculator.firebasestorage.app",
+
+    messagingSenderId:
+    "86678106931",
+
+    appId:
+    "1:86678106931:web:25405e1489dfcc6ae54446"
+
+};
+
+const app =
+initializeApp(firebaseConfig);
+
+const db =
+getFirestore(app);
+
+loadFirebaseHistory();
+
+async function loadFirebaseHistory(){
+
+    const snapshot =
+    await getDocs(
+        collection(
+            db,
+            "matrixLogs"
+        )
+    );
+
+    let logs = [];
+
+    snapshot.forEach(doc => {
+
+        logs.push(
+            doc.data()
+        );
+
+    });
+
+    const tbody =
+    document.querySelector(
+        "#historyTable tbody"
+    );
+
+    tbody.innerHTML = "";
+
+    document.getElementById(
+        "recordCount"
+    ).innerHTML =
+    `Total Record: ${logs.length}`;
+
+    [...logs]
+    .reverse()
+    .forEach((log,index) => {
+
+        const row =
+        document.createElement("tr");
+
+        row.dataset.mode =
+        log.mode || "";
+
+        row.dataset.date =
+        (log.dateTime || "")
+        .split(",")[0];
+
+        row.innerHTML = `
+            <td>
+                <input
+                    type="checkbox"
+                    class="recordCheck"
+                    value="${index}">
+            </td>
+
+            <td>${log.name || ""}</td>
+
+            <td>${
+                log.mode === "dn"
+                ? "DN PROCESS"
+                : "RECOUNT PROCESS"
+            }</td>
+
+            <td>${log.dnNo || ""}</td>
+            <td>${log.boxId || ""}</td>
+            <td>${log.unitTray || ""}</td>
+            <td>${log.boxQty || ""}</td>
+            <td>${log.childQty || ""}</td>
+            <td>${log.rowQty || ""}</td>
+            <td>${log.motherTotal || ""}</td>
+            <td>${log.childTotal || ""}</td>
+            <td>${log.dateTime || ""}</td>
+        `;
+
+        tbody.appendChild(row);
+
+    });
+
+    console.log(
+        "Firebase History Loaded ✅"
+    );
+
+}
+
+</script>
+
 </body>
 </html>
