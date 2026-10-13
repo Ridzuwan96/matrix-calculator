@@ -402,44 +402,21 @@ function deleteSelected(){
 
     }
 
-    let logs =
-    JSON.parse(
-        localStorage.getItem("matrixLogs")
-    ) || [];
+checkedRows.forEach(async cb => {
 
-    let deleteIndexes = [];
-
-    checkedRows.forEach(cb => {
-
-        deleteIndexes.push(
-            parseInt(cb.value)
-        );
-
-    });
-
-    deleteIndexes.sort(
-        (a,b) => b-a
+    await window.deleteDoc(
+        window.doc(
+            window.db,
+            "matrixLogs",
+            cb.value
+        )
     );
 
-    deleteIndexes.forEach(index => {
+});
 
-        logs.splice(
-            logs.length - 1 - index,
-            1
-        );
-
-    });
-
-    localStorage.setItem(
-        "matrixLogs",
-        JSON.stringify(logs)
-    );
-
-    alert(
-        "Selected record deleted"
-    );
-
-    location.reload();
+alert(
+    "Selected record deleted"
+);
 
 }
 
@@ -608,7 +585,9 @@ import {
     collection,
     onSnapshot,
     query,
-    orderBy
+    orderBy,
+    deleteDoc,
+    doc
 }
 from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
@@ -639,6 +618,9 @@ initializeApp(firebaseConfig);
 
 const db =
 getFirestore(app);
+window.db = db;
+window.deleteDoc = deleteDoc;
+window.doc = doc;
 
 loadFirebaseHistory();
 
@@ -662,10 +644,10 @@ onSnapshot(
 
             snapshot.forEach(doc => {
 
-                logs.push(
-                    doc.data()
-                );
-
+                logs.push({
+             id: doc.id,
+                 ...doc.data()
+                });
             });
 
             const tbody =
@@ -681,7 +663,7 @@ onSnapshot(
             `Total Record: ${logs.length}`;
 
 logs.forEach((log,index) => {
-    
+
                 const row =
                 document.createElement("tr");
 
@@ -697,7 +679,7 @@ logs.forEach((log,index) => {
                         <input
                             type="checkbox"
                             class="recordCheck"
-                            value="${index}">
+                            value="${log.id}"
                     </td>
 
                     <td>${log.name || ""}</td>
