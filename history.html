@@ -606,9 +606,12 @@ from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import {
     getFirestore,
     collection,
-    onSnapshot
+    onSnapshot,
+    query,
+    orderBy
 }
 from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
 
 const firebaseConfig = {
 
@@ -647,9 +650,13 @@ setInterval(() => {
 
 function loadFirebaseHistory(){
 
-    onSnapshot(
+onSnapshot(
+    query(
         collection(db,"matrixLogs"),
-        (snapshot) => {
+        orderBy("timestamp","desc")
+    ),
+    (snapshot) => {
+``
 
             let logs = [];
 
@@ -673,10 +680,8 @@ function loadFirebaseHistory(){
             ).innerHTML =
             `Total Record: ${logs.length}`;
 
-            [...logs]
-            .reverse()
-            .forEach((log,index) => {
-
+logs.forEach((log,index) => {
+    
                 const row =
                 document.createElement("tr");
 
