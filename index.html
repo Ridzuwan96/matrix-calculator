@@ -1228,10 +1228,15 @@ localStorage.setItem(
     "matrixLogs",
     JSON.stringify(logs)
 );
-localStorage.setItem(
-    "matrixLogs",
-    JSON.stringify(logs)
+
+window.addDoc(
+    window.collection(
+        window.db,
+        "matrixLogs"
+    ),
+    record
 );
+
 document.getElementById(
     "saveStatus"
 ).innerHTML =
@@ -1645,5 +1650,53 @@ fields.forEach(function(field,index){
 
 });
 
+</script>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+const firebaseConfig = {
+
+  apiKey: "API_KEY_KAU",
+
+  authDomain:
+  "dhl-matrix-calculator.firebaseapp.com",
+
+  projectId:
+  "dhl-matrix-calculator",
+
+  storageBucket:
+  "dhl-matrix-calculator.firebasestorage.app",
+
+  messagingSenderId:
+  "86678106931",
+
+  appId:
+  "1:86678106931:web:25405e1489dfcc6ae54446"
+
+};
+
+const app =
+initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+window.db = db;
+window.collection = collection;
+window.addDoc = addDoc;
+window.
+console.log("Firebase Connected ✅");
 
 </script>
+
+</body>
+</html>
