@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Matrix Calculator</title>
+
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+
+    background-color:#f5f5f5;
+
+    background-image:url("dhl-3.jpg");
+
+    background-repeat:no-repeat;
+
+    background-position:center center;
+
+    background-size:cover;
+
+    background-attachment:fixed;
+
+    padding:15px;
+
+
+
+    position:relative;
+
+
+}
+html,
+body{
+
+    width:100%;
+    min-height:100vh;
+
+}
+.popup{
+    display:none;
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.6);
+
+    z-index:9999;
+}
+
+.popupContent{
+
+    width:450px;
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:10px;
+
+    text-align:center;
+
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+}
+
+.popupContent h2{
+    color:red;
+    margin-bottom:15px;
+}
+
+.popupContent button{
+    margin-top:15px;
+
+    padding:10px 30px;
+
+    font-size:18px;
+
+    background:red;
+
+    color:white;
+
+    border:none;
+
+    cursor:pointer;
+}
+
+/* ========================= */
+/* MAIN LAYOUT */
+/* ========================= */
+
+.main{
+    display:grid;
+    grid-template-columns:550px 550px 550px;
+    gap:70px;
+    justify-content:center;
+
+    margin-top:20px;
+}
+
+/* ========================= */
+/* LEFT & RIGHT PANEL */
+/* ========================= */
+
+.sidePanel{
+    width:550px;
+    background:#f8f8f8;
+    border:3px solid #d9d9d9;
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* title */
+
+.panelTitle{
+    position:relative;
+
+    height:110px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    border-bottom:3px solid #000;
+
+    text-align:center;
+    font-weight:900;
+
+    padding-right:70px; /* ruang untuk icon */
+    overflow:hidden;
+}
+
+.returnTitle{
+
+    background:
+    linear-gradient(
+        180deg,
+        #f2f2f2 0%,
+        #d9d9d9 100%
+    );
+
+}
+.customerTitle{
+
+    background:
+    linear-gradient(
+        180deg,
+        #fff3b0,
+        #ffd54f
+    );
+
+}.panelTitle .line1{
+    font-size:28px;
+    box-shadow:
+inset 0 -3px 0 rgba(0,0,0,0.15);
+
+}
+
+.panelTitle .line2{
+    font-size:24px;
+    margin-top:10px;
+}
+
+/* full partial title */
+
+.trayHeader{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+}
+
+.trayHeader div{
+    height:72px;
+
+    border-right:3px solid #000;
+    border-bottom:3px solid #000;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:20px;
+    font-weight:bold;
+}
+
+.trayHeader div:last-child{
+    border-right:none;
+}
+
+.fullTray{
+    background:#bad4df;
+}
+
+.partialTray{
+    background:#ebb983;
+}
+
+/* numbers */
+
+.resultRow{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+}
+
+.resultCell{
+    height:95px;
+
+    border-right:3px solid #000;
+    border-bottom:3px solid #000;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:15px;
+}
+
+.resultCell:last-child{
+    border-right:none;
+}
+
+.bigNo{
+    font-size:64px;
+    font-weight:900;
+    line-height:1;
+}
+
+.red{
+    color:red;
+}
+
+.unit{
+    font-size:20px;
+    font-weight:bold;
+    text-transform:uppercase;
+}
+/* total */
+
+.totalBox{
+
+    height:275px;
+
+    background:#d0d0d0;
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+    justify-content:center;
+
+}
+.totalTitle{
+
+    font-size:26px;
+
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    margin-bottom:20px;
+
+}
+
+.totalValue{
+
+    font-size:85px;
+
+    font-weight:900;
+
+    line-height:1;
+
+}
+
+.totalUnit{
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    margin-top:15px;
+
+}
+
+/* ========================= */
+/* CENTER */
+/* ========================= */
+
+.centerPanel{
+    width:565px;
+    background:#ffffff;
+
+    border:1px solid #d9d9d9;
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.15);
+}
+.mainTitle{
+    height:62px;
+    background:#d40511;
+    color:#ffffff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:42px;
+    font-weight:900;
+    letter-spacing:1px;
+}
+
+.row{
+    display:grid;
+    grid-template-columns:170px 1fr;
+}
+
+.row label{
+    background:#b9cf96;
+    border:3px solid #000;
+    border-right:none;
+    border-top:none;
+    height:74px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    font-style:italic;
+    font-weight:700;
+}
+
+.row input{
+    height:74px;
+    border:3px solid #000;
+    border-top:none;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    background:#dfe9df;
+}
+.row select{
+
+    height:74px;
+
+    border:3px solid #000;
+
+    border-top:none;
+
+    text-align:center;
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    background:#dfe9df;
+
+}
+.inputGrid{
+    display:grid;
+    grid-template-columns:180px 190px 190px;
+}
+
+.inputCol{
+    display:flex;
+    flex-direction:column;
+}
+
+.inputTitle{
+    height:88px;
+    background:#b9cf9d;
+    border:3px solid #000;
+    border-right:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-size:18px;
+    font-weight:700;
+    line-height:1.2;
+}
+
+.inputCol:last-child .inputTitle{
+    border-right:3px solid #000;
+}
+
+.inputValue input{
+    width:100%;
+    height:100px;
+    border:3px solid #000;
+    border-top:none;
+    border-right:none;
+    background:#ffcc00;
+    text-align:center;
+    font-size:58px;
+    font-weight:800;
+}
+
+.inputCol:last-child .inputValue input{
+    border-right:3px solid #000;
+}
+
+.rowBox{
+    width:200px;
+    margin:18px auto;
+}
+
+.rowBoxTitle{
+    background:#b9cf96;
+    border:3px solid #000;
+    text-align:center;
+    padding:18px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.rowBox input{
+    width:100%;
+    height:90px;
+    border:3px solid #000;
+    border-top:none;
+    background:#ffcc00;
+    text-align:center;
+    font-size:56px;
+    font-weight:bold;
+}
+
+.btnArea{
+    text-align:center;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+
+.btnArea button{
+    padding:15px 40px;
+    font-size:22px;
+    font-weight:bold;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.calcBtn{
+    background:#27ae60;
+    color:white;
+}
+
+.resetBtn{
+
+    background:#d40511;
+
+    color:white;
+
+    border-radius:12px;
+
+    box-shadow:
+    0 4px 12px rgba(212,5,17,0.35);
+
+    transition:0.2s;
+
+}
+.resetBtn:hover{
+
+    transform:translateY(-2px);
+
+    background:#b8040f;
+
+}.historyBtn{
+
+    background:#0b63ce;
+
+    color:white;
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:15px 40px;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    margin-right:15px;
+
+    box-shadow:
+    0 4px 12px rgba(11,99,206,0.35);
+
+}
+
+.historyBtn:hover{
+
+    background:#084d9e;
+
+}
+.iconTop{
+    position:absolute;
+
+    top:5px;
+    right:10px;
+
+    font-size:90px;
+    line-height:1;
+
+    z-index:10;
+}
+
+.arrowWrap{
+    display:flex;
+    justify-content:center;
+    margin-top:5px;
+    margin-bottom:5px;
+}
+
+.arrowDown{
+    position:relative;
+    width:40px;
+    height:80px;
+}
+
+.arrowDown::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    width:40px;
+    height:50px;
+}
+
+.arrowDown::after{
+    content:"";
+    position:absolute;
+    bottom:0;
+    left:-20px;
+
+    border-left:40px solid transparent;
+    border-right:40px solid transparent;
+    border-top:40px solid transparent;
+}
+
+.blueArrow::before{
+    background:#8bb8ef;
+}
+
+.blueArrow::after{
+    border-top:40px solid #8bb8ef;
+}
+
+.orangeArrow::before{
+    background:#f0c08e;
+}
+
+.orangeArrow::after{
+    border-top:40px solid #f0c08e;
+}
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background-image:url("dhl-background.jpg");
+
+    background-size:cover;
+
+    background-position:center;
+
+    opacity:0.06;
+
+    z-index:-1;
+
+}
+
+.customerTotalBox{
+
+    background:
+    linear-gradient(
+        180deg,
+        #fff3b0,
+        #ffd54f
+    );
+
+}
+.previewSection{
+
+    width:1700px;
+
+    margin:25px auto;
+
+    background:rgba(255,255,255,0.95);
+
+    border-radius:16px;
+
+    padding:20px;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.20);
+
+}
+
+.previewTitle{
+
+    text-align:center;
+
+    font-size:28px;
+
+    font-weight:900;
+
+    color:#d40511;
+
+    margin-bottom:20px;
+
+}
+
+#historyPreview{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fill,minmax(280px,1fr));
+
+    gap:15px;
+
+    min-height:120px;
+
+}
+.previewCard{
+
+    background:white;
+
+    border-left:6px solid #d40511;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    box-shadow:
+    0 4px 10px rgba(0,0,0,0.12);
+
+    font-size:14px;
+
+    line-height:1.6;
+
+}
+.dnCard{
+    border-left:6px solid #0b63ce;
+}
+
+.recountCard{
+    border-left:6px solid #f39c12;
+}
+.devCredit{
+
+    text-align:center;
+
+    margin-top:15px;
+
+    margin-bottom:10px;
+
+    padding:12px;
+
+}
+
+.appVersion{
+
+    color:#d40511;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+}
+
+.devNames{
+
+    color:black;
+
+    font-size:13px;
+
+    margin-top:5px;
+
+
+}
+#loginName,
+#loginWWID{
+
+    width:300px;
+
+    padding:10px;
+
+    font-size:18px;
+
+    text-align:center;
+
+    border:1px solid #ccc;
+
+    border-radius:6px;
+
+}
+.sideMenu{
+
+    position:fixed;
+
+    left:40px;
+
+    top:200px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+    z-index:1000;
+
+}
+
+.menuBtn{
+
+    width:120px;
+
+    height:55px;
+
+    border:none;
+
+    border-radius:12px;
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+    0 4px 12px rgba(0,0,0,0.25);
+
+}
+
+.logoutBtn{
+
+    background:#888;
+
+}
+
+.logoutBtn:hover{
+
+    background:#666;
+
+}
+
+.historyMenuBtn:hover{
+
+    background:#084d9e;
+
+}
+
+#saveStatus{
+
+    margin-top:10px;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    color:#27ae60;
+
+}
+</style>
+</head>
+
+<body>
+<div class="sideMenu">
+
+    <button
+        class="menuBtn logoutBtn"
+        onclick="logout()">
+
+        LOGOUT
+
+    </button>
+
+    <button
+        class="menuBtn historyMenuBtn"
+        onclick="window.open('history.html','_blank')">
+
+        HISTORY
+
+    </button>
+
+</div>
+<div class="main">
+
+    <!-- LEFT -->
+<div class="sidePanel">
+
+<div class="panelTitle returnTitle">
+
+    <div class="iconTop">🧕🏻</div>
+
+    <div class="line1">MOTHER BOX</div>
+    <div class="line2">(RETURN)</div>
+
+</div>
+
+    <div class="trayHeader">
+        <div class="fullTray">FULL TRAY</div>
+        <div class="partialTray">PARTIAL TRAY</div>
+    </div>
+
+    <div class="resultRow">
+        <div class="resultCell">
+<span class="bigNo" id="returnFullTray">0</span>
+<span class="unit">Tray</span>
+
+        </div>
+
+        <div class="resultCell">
+<span class="bigNo red" id="returnPartialTray">0</span>            <span class="unit">tray</span>
+        </div>
+    </div>
+
+    <div class="resultRow">
+        <div class="resultCell">
+<span class="bigNo" id="returnFullUnit">0</span>
+<span class="unit">unit</span>
+        </div>
+
+        <div class="resultCell">
+<span class="bigNo" id="returnPartialUnit">0</span>
+<span class="unit">unit</span>     
+   </div>
+    </div>
+
+<div class="totalBox">
+
+    <div class="totalTitle">
+        RETURN TOTAL
+    </div>
+
+    <div class="totalValue" id="returnTotal">
+        0
+    </div>
+
+    <div class="totalUnit">
+        UNIT
+    </div>
+
+</div>    
+
+</div>
+
+    <!-- CENTER -->
+    <div class="centerPanel">
+
+        <div class="mainTitle">MATRIX CALCULATOR</div>
+
+<div class="row">
+<label>USER</label>
+
+<input type="text"
+       id="currentUser"
+       readonly>
+</div>
+
+<div class="row">
+
+    <label>MODE</label>
+
+    <select id="processMode">
+
+        <option value="dn">
+            DN PROCESS
+        </option>
+
+        <option value="recount">
+            RECOUNT PROCESS
+        </option>
+
+    </select>
+
+</div>
+
+<div class="row" id="dnRow">
+
+    <label>DN NUMBER</label>
+                <input type="text" id="dnNo">
+        </div>
+
+        <div class="row">
+            <label>BOX ID</label>
+
+            <input type="text" id="boxId">
+        </div>
+
+<div class="inputGrid">
+
+    <div class="inputCol">
+        <div class="inputTitle">
+            UNIT PER TRAY
+        </div>
+
+        <div class="inputValue">
+            <input type="number" id="unitTray">
+        </div>
+    </div>
+
+    <div class="inputCol">
+        <div class="inputTitle">
+            BOX QUANTITY
+        </div>
+
+        <div class="inputValue">
+            <input type="number" id="boxQty">
+        </div>
+    </div>
+
+<div class="inputCol" id="childBoxCol">
+
+    <div class="inputTitle" id="qtyTitle">
+        CHILD BOX<br>
+        QUANTITY
+    </div>
+
+    <div class="inputValue">
+<input type="number" id="childQty">    </div>
+
+</div>
+</div>
+
+        <div class="rowBox">
+            <div class="rowBoxTitle">NO. OF ROW</div>
+<input type="number" id="rowQty">    
+    </div>
+
+
+
+<div class="btnArea">
+
+<button
+    id="saveBtn"
+    class="resetBtn"
+    onclick="resetForm()">
+    SAVE & NEXT
+</button>
+    <div id="saveStatus"></div>
+
+</div>
+</div>   <!-- tutup centerPanel -->
+
+<!-- RIGHT -->
+<div class="sidePanel" id="customerPanel">
+    <div class="panelTitle customerTitle">
+
+    <div class="iconTop">✧👶🏻</div>
+
+    <div class="line1">CHILD BOX</div>
+    <div class="line2">(CUSTOMER)</div>
+</div>
+
+    <div class="trayHeader">
+        <div class="fullTray">FULL TRAY</div>
+        <div class="partialTray">PARTIAL TRAY</div>
+    </div>
+
+    <div class="resultRow">
+<div class="resultCell">
+    <span class="bigNo" id="custFullTray">0</span>
+    <span class="unit">TRAY</span>
+</div>      
+
+        <div class="resultCell">
+<span class="bigNo red" id="custPartialTray">0</span>            <span class="unit">tray</span>
+        </div>
+    </div>
+
+    <div class="resultRow">
+        <div class="resultCell">
+<span class="bigNo" id="custFullUnit">0</span>
+<span class="unit">unit</span>
+        </div>
+
+        <div class="resultCell">
+<span class="bigNo" id="custPartialUnit">0</span>
+<span class="unit">unit</span>
+        </div>
+    </div>
+
+<div class="totalBox customerTotalBox">
+
+    <div class="totalTitle">
+        CUSTOMER TOTAL
+    </div>
+
+    <div class="totalValue" id="custTotal">
+        0
+    </div>
+
+    <div class="totalUnit">
+        UNIT
+    </div>
+
+</div>    
+
+</div>
+
+</div>
+
+
+<div class="previewSection">
+
+    <div class="previewTitle">
+
+        RECENT HISTORY
+
+    </div>
+
+    <div id="historyPreview">
+
+        No Record Yet
+
+    </div>
+<div class="devCredit">
+
+    <div class="appVersion">
+        Matrix Calculator v1.0
+    </div>
+
+    <div class="devNames">
+        Developed by Fatin Humairah • Nuratina • Ridzuwan
+    </div>
+
+</div>
+
+</div>
+
+<div id="loginPopup" class="popup">
+
+    <div class="popupContent">
+
+        <h2>LOGIN</h2>
+
+        <input
+            type="text"
+            id="loginName"
+            placeholder="Enter Name">
+
+        <br><br>
+
+        <input
+            type="text"
+            id="loginWWID"
+            placeholder="Enter WWID">
+
+        <br><br>
+
+        <button onclick="loginUser()">
+            LOGIN
+        </button>
+
+    </div>
+
+</div>
+<div id="errorPopup" class="popup">
+
+    <div class="popupContent">
+
+        <h2>⚠ ERROR</h2>
+
+        <p id="popupMessage"></p>
+
+        <button onclick="closePopup()">OK</button>
+
+    </div>
+
+</div>
+
+<audio id="errorSound">
+    <source src="error.mp3" type="audio/mpeg">
+</audio>
+
+
+
+</body>
+</html>
+
+<script>
+
+function resetForm(){
+
+    const confirmSave =
+    confirm(
+        "Save this record?"
+    );
+
+    if(!confirmSave){
+
+        return;
+
+    }
+
+    // Jangan simpan jika DN kosong
+    if(
+        document.getElementById("processMode").value === "dn"
+        &&
+        document.getElementById("dnNo").value === ""
+    ){
+        return;
+    }
+    // Simpan rekod
+    saveRecord();
+
+    loadPreview();
+
+    // Clear input
+    document.getElementById("dnNo").value = "";
+    document.getElementById("boxId").value = "";
+    document.getElementById("unitTray").value = "";
+    document.getElementById("boxQty").value = "";
+document.getElementById("childQty").value = "";
+    document.getElementById("rowQty").value = "";
+
+    // Reset output Mother Box
+    document.getElementById("returnFullTray").textContent = "0";
+    document.getElementById("returnPartialTray").textContent = "0";
+    document.getElementById("returnFullUnit").textContent = "0";
+    document.getElementById("returnPartialUnit").textContent = "0";
+    document.getElementById("returnTotal").textContent = "0";
+
+    // Reset output Child Box
+    document.getElementById("custFullTray").textContent = "0";
+    document.getElementById("custPartialTray").textContent = "0";
+    document.getElementById("custFullUnit").textContent = "0";
+    document.getElementById("custPartialUnit").textContent = "0";
+    document.getElementById("custTotal").textContent = "0";
+
+}
+
+function saveRecord(){
+
+    if(
+        document.getElementById("boxId")
+        .value
+        .trim() === ""
+    ){
+
+        alert(
+            "Please Enter Box ID"
+        );
+
+        return;
+
+    }
+
+    const record = {
+
+        mode :
+        document.getElementById("processMode").value,
+dateTime :
+new Date().toLocaleString(
+    "en-MY",
+    {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+    }
+),
+        name :localStorage.getItem("currentUser"),
+        dnNo : document.getElementById("dnNo").value,
+        boxId : document.getElementById("boxId").value,
+
+        unitTray : document.getElementById("unitTray").value,
+        boxQty : document.getElementById("boxQty").value,
+childQty :
+document.getElementById("childQty").value,
+
+rowQty :
+document.getElementById("rowQty").value,
+
+        motherTotal :
+            document.getElementById("returnTotal").textContent,
+
+        childTotal :
+            document.getElementById("custTotal").textContent
+    };
+
+let logs =
+    JSON.parse(
+        localStorage.getItem("matrixLogs")
+    ) || [];
+
+
+logs.push(record);
+
+localStorage.setItem(
+    "matrixLogs",
+    JSON.stringify(logs)
+);
+localStorage.setItem(
+    "matrixLogs",
+    JSON.stringify(logs)
+);
+document.getElementById(
+    "saveStatus"
+).innerHTML =
+"✅ RECORD SAVED";
+
+}
+function showError(message){
+
+    document.getElementById("popupMessage").textContent =
+        message;
+
+    document.getElementById("errorPopup").style.display =
+        "block";
+
+    document.getElementById("errorSound").play();
+
+}
+function closePopup(){
+
+    document.getElementById("errorPopup").style.display =
+        "none";
+
+}
+
+function beep() {
+
+    const audioContext =
+        new (window.AudioContext || window.webkitAudioContext)();
+
+    const oscillator =
+        audioContext.createOscillator();
+
+    const gainNode =
+        audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.value = 4500;
+
+    oscillator.type = "square";
+
+    oscillator.start();
+
+    gainNode.gain.exponentialRampToValueAtTime(
+        0.00001,
+        audioContext.currentTime + 0.5
+    );
+
+    oscillator.stop(audioContext.currentTime + 0.5);
+
+}
+function calculate() {
+
+    const unitTray = parseInt(document.getElementById("unitTray").value) || 0;
+    const boxQty   = parseInt(document.getElementById("boxQty").value) || 0;
+const mode =
+document.getElementById("processMode").value;
+
+const childQty =
+parseInt(document.getElementById("childQty")?.value) || 0;
+
+const rowQty   = parseInt(document.getElementById("rowQty").value) || 0;
+
+    /* =========================
+       VALIDATION
+    ========================= */
+
+if(unitTray <= 0){
+    return;
+}    
+
+if(boxQty <= 0){
+    return;
+}    
+
+if(rowQty <= 0){
+    return;
+}
+if(
+    mode === "dn" &&
+    childQty > boxQty
+){
+    showError(
+        "CHILD BOX QUANTITY CANNOT EXCEED BOX QUANTITY"
+    );
+
+    beep();
+
+    return;
+}
+
+
+/* =========================
+       CUSTOMER BOX
+    ========================= */
+
+    const custFullTray    = Math.floor(childQty / unitTray);
+    const custRemainUnit  = childQty % unitTray;
+    const custPartialTray = custRemainUnit > 0 ? 1 : 0;
+
+    const custFullUnit = custFullTray * unitTray;
+
+    /* =========================
+       RETURN BOX
+    ========================= */
+
+let returnQty;
+
+if(mode === "recount"){
+
+    returnQty = boxQty;
+
+}
+else{
+
+    returnQty = boxQty - childQty;
+
+}
+    const returnFullTray    = Math.floor(returnQty / unitTray);
+    const returnRemainUnit  = returnQty % unitTray;
+    const returnPartialTray = returnRemainUnit > 0 ? 1 : 0;
+
+    const returnFullUnit = returnFullTray * unitTray;
+
+    /* =========================
+       CUSTOMER TRAY TABLE
+    ========================= */
+
+    let custFullColumn = 0;
+    let custFullQty    = 0;
+    let custPartColumn = 0;
+    let custPartQty    = 0;
+
+    if(custRemainUnit > 0){
+
+        custFullColumn = Math.floor(custRemainUnit / rowQty);
+        custFullQty    = custFullColumn * rowQty;
+
+        custPartQty    = custRemainUnit % rowQty;
+        custPartColumn = custPartQty > 0 ? 1 : 0;
+    }
+
+    /* =========================
+       RETURN TRAY TABLE
+    ========================= */
+
+    let returnFullColumn = 0;
+    let returnFullQty    = 0;
+    let returnPartColumn = 0;
+    let returnPartQty    = 0;
+
+    if(returnRemainUnit > 0){
+
+        returnFullColumn = Math.floor(returnRemainUnit / rowQty);
+        returnFullQty    = returnFullColumn * rowQty;
+
+        returnPartQty    = returnRemainUnit % rowQty;
+        returnPartColumn = returnPartQty > 0 ? 1 : 0;
+    }
+
+    /* =========================
+       CUSTOMER DISPLAY
+    ========================= */
+
+    document.getElementById("custFullTray").textContent =
+        custFullTray;
+
+    document.getElementById("custPartialTray").textContent =
+        custPartialTray;
+
+    document.getElementById("custFullUnit").textContent =
+        custFullUnit;
+
+    document.getElementById("custPartialUnit").textContent =
+        custRemainUnit;
+
+    document.getElementById("custTotal").textContent =
+        childQty;
+
+    /* =========================
+       RETURN DISPLAY
+    ========================= */
+
+    document.getElementById("returnFullTray").textContent =
+        returnFullTray;
+
+    document.getElementById("returnPartialTray").textContent =
+        returnPartialTray;
+
+    document.getElementById("returnFullUnit").textContent =
+        returnFullUnit;
+
+    document.getElementById("returnPartialUnit").textContent =
+        returnRemainUnit;
+
+    document.getElementById("returnTotal").textContent =
+        returnQty;
+
+    /* =========================
+       CUSTOMER TABLE
+    ========================= */
+
+
+    /* =========================
+       RETURN TABLE
+    ========================= */
+}
+function loadPreview(){
+
+    const logs =
+        JSON.parse(localStorage.getItem("matrixLogs")) || [];
+
+    const preview =
+        document.getElementById("historyPreview");
+
+    preview.innerHTML = "";
+
+    if(logs.length === 0){
+
+        preview.innerHTML = "No Record Yet";
+
+        return;
+
+    }
+
+    logs
+        .slice()
+        .reverse()
+        .slice(0,5)
+
+        .forEach(function(log){
+
+preview.innerHTML += `
+<div class="previewCard ${
+    log.mode === "dn"
+    ? "dnCard"
+    : "recountCard"
+}">
+    <h3 style="
+        color:#d40511;
+        margin-bottom:10px;
+    ">
+        ${log.dnNo}
+    </h3>
+
+    <b>BOX ID:</b> ${log.boxId}<br>
+
+    <b>CUSTOMER:</b> ${log.childTotal}<br>
+
+    <b>RETURN:</b> ${log.motherTotal}<br>
+
+    <b>PROCESSOR:</b><br>
+    ${log.name}<br>
+
+    <small>
+        ${log.dateTime}
+    </small>
+
+</div>
+
+`;
+        });
+
+}
+function toggleMode(){
+
+    const mode =
+        document.getElementById("processMode").value;
+
+    if(mode === "recount"){
+
+        document.getElementById("dnRow")
+        .style.display = "none";
+
+        document.getElementById("customerPanel")
+        .style.display = "none";
+
+        document.getElementById("qtyTitle")
+        .innerHTML =
+        "MOTHER BOX<br>QUANTITY";
+
+    }
+    else{
+
+        document.getElementById("dnRow")
+        .style.display = "grid";
+
+        document.getElementById("customerPanel")
+        .style.display = "block";
+
+        document.getElementById("qtyTitle")
+        .innerHTML =
+        "CHILD BOX<br>QUANTITY";
+
+    }
+
+}
+function loginUser(){
+
+    const name =
+        document.getElementById("loginName").value.trim();
+
+    const wwid =
+        document.getElementById("loginWWID").value.trim();
+
+    if(name === "" || wwid === ""){
+
+        alert(
+            "Please enter Name and WWID"
+        );
+
+        return;
+
+    }
+
+    const user =
+        name + " (" + wwid + ")";
+
+    localStorage.setItem(
+        "currentUser",
+        user
+    );
+
+    document.getElementById(
+        "currentUser"
+    ).value = user;
+
+    document.getElementById(
+        "loginPopup"
+    ).style.display = "none";
+
+}
+function logout(){
+
+    localStorage.removeItem(
+        "currentUser"
+    );
+
+    location.reload();
+
+}
+document.addEventListener("DOMContentLoaded", function(){
+
+const user =
+localStorage.getItem("currentUser");
+
+if(user){
+
+    document.getElementById(
+        "currentUser"
+    ).value = user;
+
+}
+else{
+
+    document.getElementById(
+        "loginPopup"
+    ).style.display = "block";
+
+}
+
+loadPreview();    // Auto Calculate
+    document
+.querySelectorAll("#unitTray,#boxQty,#childQty,#rowQty")
+        .forEach(function(el){
+
+            el.addEventListener("input", calculate);
+
+        });
+document
+.getElementById("processMode")
+.addEventListener(
+    "change",
+    toggleMode
+);
+
+toggleMode();
+    // Enter ke field seterusnya
+    const fields = document.querySelectorAll("input");
+
+fields.forEach(function(field,index){
+
+    field.addEventListener("keydown", function(e){
+
+        if(e.key === "Enter"){
+
+            e.preventDefault();
+
+            if(field.id === "rowQty"){
+
+                document
+                .getElementById("saveBtn")
+                .focus();
+
+                return;
+
+            }
+
+            if(fields[index + 1]){
+
+                fields[index + 1].focus();
+
+            }
+
+        }
+
+    });
+
+});
+
+});
+
+
+</script>
