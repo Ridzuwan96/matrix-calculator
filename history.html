@@ -606,7 +606,7 @@ from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import {
     getFirestore,
     collection,
-    getDocs
+    onSnapshot
 }
 from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
@@ -639,85 +639,90 @@ getFirestore(app);
 
 loadFirebaseHistory();
 
-async function loadFirebaseHistory(){
+setInterval(() => {
 
-    const snapshot =
-    await getDocs(
-        collection(
-            db,
-            "matrixLogs"
-        )
-    );
+    loadFirebaseHistory();
 
-    let logs = [];
+}, 5000);
 
-    snapshot.forEach(doc => {
+function loadFirebaseHistory(){
 
-        logs.push(
-            doc.data()
-        );
+    onSnapshot(
+        collection(db,"matrixLogs"),
+        (snapshot) => {
 
-    });
+            let logs = [];
 
-    const tbody =
-    document.querySelector(
-        "#historyTable tbody"
-    );
+            snapshot.forEach(doc => {
 
-    tbody.innerHTML = "";
+                logs.push(
+                    doc.data()
+                );
 
-    document.getElementById(
-        "recordCount"
-    ).innerHTML =
-    `Total Record: ${logs.length}`;
+            });
 
-    [...logs]
-    .reverse()
-    .forEach((log,index) => {
+            const tbody =
+            document.querySelector(
+                "#historyTable tbody"
+            );
 
-        const row =
-        document.createElement("tr");
+            tbody.innerHTML = "";
 
-        row.dataset.mode =
-        log.mode || "";
+            document.getElementById(
+                "recordCount"
+            ).innerHTML =
+            `Total Record: ${logs.length}`;
 
-        row.dataset.date =
-        (log.dateTime || "")
-        .split(",")[0];
+            [...logs]
+            .reverse()
+            .forEach((log,index) => {
 
-        row.innerHTML = `
-            <td>
-                <input
-                    type="checkbox"
-                    class="recordCheck"
-                    value="${index}">
-            </td>
+                const row =
+                document.createElement("tr");
 
-            <td>${log.name || ""}</td>
+                row.dataset.mode =
+                log.mode || "";
 
-            <td>${
-                log.mode === "dn"
-                ? "DN PROCESS"
-                : "RECOUNT PROCESS"
-            }</td>
+                row.dataset.date =
+                (log.dateTime || "")
+                .split(",")[0];
 
-            <td>${log.dnNo || ""}</td>
-            <td>${log.boxId || ""}</td>
-            <td>${log.unitTray || ""}</td>
-            <td>${log.boxQty || ""}</td>
-            <td>${log.childQty || ""}</td>
-            <td>${log.rowQty || ""}</td>
-            <td>${log.motherTotal || ""}</td>
-            <td>${log.childTotal || ""}</td>
-            <td>${log.dateTime || ""}</td>
-        `;
+                row.innerHTML = `
+                    <td>
+                        <input
+                            type="checkbox"
+                            class="recordCheck"
+                            value="${index}">
+                    </td>
 
-        tbody.appendChild(row);
+                    <td>${log.name || ""}</td>
 
-    });
+                    <td>${
+                        log.mode === "dn"
+                        ? "DN PROCESS"
+                        : "RECOUNT PROCESS"
+                    }</td>
 
-    console.log(
-        "Firebase History Loaded ✅"
+                    <td>${log.dnNo || ""}</td>
+                    <td>${log.boxId || ""}</td>
+                    <td>${log.unitTray || ""}</td>
+                    <td>${log.boxQty || ""}</td>
+                    <td>${log.childQty || ""}</td>
+                    <td>${log.rowQty || ""}</td>
+                    <td>${log.motherTotal || ""}</td>
+                    <td>${log.childTotal || ""}</td>
+                    <td>${log.dateTime || ""}</td>
+                `;
+
+                tbody.appendChild(row);
+
+            });
+
+            console.log(
+                "Firebase History Loaded ✅"
+            );
+
+        }
     );
 
 }
