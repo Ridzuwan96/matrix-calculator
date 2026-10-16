@@ -624,11 +624,6 @@ window.doc = doc;
 
 loadFirebaseHistory();
 
-setInterval(() => {
-
-    loadFirebaseHistory();
-
-}, 5000);
 
 function loadFirebaseHistory(){
 
@@ -638,7 +633,7 @@ onSnapshot(
         orderBy("timestamp","desc")
     ),
     (snapshot) => {
-``
+
 
             let logs = [];
 
@@ -670,16 +665,21 @@ logs.forEach((log,index) => {
                 row.dataset.mode =
                 log.mode || "";
 
-                row.dataset.date =
-                (log.dateTime || "")
-                .split(",")[0];
+                const datePart =
+                (log.dateTime || "").split(",")[0];
 
+                const parts = datePart.split("/");
+
+                    row.dataset.date =
+                parts[2] + "-" +
+                parts[1].padStart(2,"0") + "-" +
+                parts[0].padStart(2,"0");
                 row.innerHTML = `
                     <td>
-                        <input
-                            type="checkbox"
-                            class="recordCheck"
-                            value="${log.id}"
+                       <input
+                    type="checkbox"
+                    class="recordCheck"
+                    value="${log.id}">
                     </td>
 
                     <td>${log.name || ""}</td>
