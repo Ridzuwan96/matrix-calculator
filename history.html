@@ -1,720 +1,957 @@
 <!DOCTYPE html>
 <html>
-
+ 
 <head>
-
+ 
 <meta charset="UTF-8">
-
+ 
 <title>Matrix Calculator History</title>
-
+ 
 </head>
 <style>
-
+ 
 body{
-
+ 
     font-family:Arial,sans-serif;
-
+ 
     background:#f5f5f5;
-
+ 
     padding:20px;
-
+ 
 }
-
+ 
 h1{
-
+ 
     text-align:center;
-
+ 
     color:#d40511;
-
+ 
     margin-bottom:20px;
-
+ 
 }
-
+ 
 table{
-
+ 
     width:100%;
-
+ 
     border-collapse:collapse;
-
+ 
     background:white;
-
+ 
 }
-
+ 
 th{
-
+ 
     background:#4f81bd;
-
+ 
     color:white;
-
+ 
     padding:15px;
-
+ 
     border:1px solid #ccc;
-
+ 
 }
-
-td{
-
-    padding:12px;
-
-    border:1px solid #ccc;
-
-    text-align:center;
-
-}
-
-tr:nth-child(even){
-
-    background:#f7f7f7;
-
-}
-.topBar{
-
-    display:flex;
-
-    justify-content:center;
-
-    gap:15px;
-
-    margin-bottom:20px;
-
-}
-
-#searchInput{
-
-    width:400px;
-
-    padding:12px;
-
-    font-size:16px;
-
-    border:1px solid #ccc;
-
-    border-radius:8px;
-
-}
-
-.topBar button{
-
-    background:#27ae60;
-
+ .calcHeader{
+    background:#00a651 !important;
     color:white;
-
-    border:none;
-
-    padding:12px 25px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-    font-weight:bold;
-
 }
-
+ 
+.processQtyCell{
+    background:#e8f5e9;
+    font-weight:bold;
+    color:#1b5e20;
+}
+ 
+.customerQtyCell{
+    background:#e8f5e9;
+    font-weight:bold;
+    color:#1b5e20;
+}
+ 
+td{
+ 
+    padding:12px;
+ 
+    border:1px solid #ccc;
+ 
+    text-align:center;
+ 
+}
+ 
+tr:nth-child(even){
+ 
+    background:#f7f7f7;
+ 
+}
+ 
+.topBar{
+ 
+    display:flex;
+ 
+    justify-content:center;
+ 
+    gap:15px;
+ 
+    margin-bottom:20px;
+ 
+}
+ 
+#searchInput{
+ 
+    width:400px;
+ 
+    padding:12px;
+ 
+    font-size:16px;
+ 
+    border:1px solid #ccc;
+ 
+    border-radius:8px;
+ 
+}
+ 
+.topBar button{
+ 
+    background:#27ae60;
+ 
+    color:white;
+ 
+    border:none;
+ 
+    padding:12px 25px;
+ 
+    border-radius:8px;
+ 
+    cursor:pointer;
+ 
+    font-weight:bold;
+ 
+}
+ 
 .topBar button:hover{
-
+ 
     background:#219150;
-
+ 
+}
+.processQtyCell{
+ 
+    background:#e8f5e9;
+ 
+    font-weight:bold;
+ 
+    color:#1b5e20;
+ 
+}
+ 
+.customerQtyCell{
+ 
+    background:#e8f5e9;
+ 
+    font-weight:bold;
+ 
+    color:#1b5e20;
+ 
 }
 </style>
 <body>
-
+ 
 <h1>MATRIX CALCULATOR HISTORY</h1>
-
+ 
 <div class="topBar">
-
+ 
     <input
+ 
         type="text"
+ 
         id="searchInput"
+ 
         placeholder="Search DN / Box ID / Processor..."
-    >
-
+>
+ 
     <button onclick="filterHistory()">
+ 
         🔍 SEARCH
-    </button>
-
+</button>
+ 
     <select id="modeFilter"
+ 
             onchange="filterHistory()">
-
+ 
         <option value="all">
+ 
             ALL MODE
-        </option>
-
+</option>
+ 
         <option value="dn">
+ 
             DN PROCESS
-        </option>
-
+</option>
+ 
         <option value="recount">
+ 
             RECOUNT PROCESS
-        </option>
-
+</option>
+ 
+<option value="rma">
+    RMA (INBOUND)
+</option>
+ 
     </select>
-
+ 
     <input
+ 
         type="date"
+ 
         id="dateFilter"
+ 
         onchange="filterHistory()">
-
+ 
 <button
+ 
     onclick="deleteSelected()"
+ 
     style="
+ 
         background:#d40511;
+ 
         color:white;
+ 
     ">
+ 
     DELETE SELECTED
 </button>
-    <button onclick="exportCSV()">
+<button onclick="exportCSV()">
+ 
         📥 EXPORT CSV
-    </button>
-
+</button>
+ 
     <button onclick="printTable()">
+ 
     PRINT
 </button>
-
+ 
 </div>
-
+ 
 <div id="recordCount"
+ 
      style="
+ 
         margin-bottom:10px;
+ 
         font-weight:bold;
+ 
         color:#555;
+ 
      ">
 </div>
-
+ 
 <table id="historyTable">
-
+ 
 <thead>
-
+ 
 <tr>
-
+ 
 <th>
-    <input
+<input
+ 
         type="checkbox"
+ 
         id="selectAll"
+ 
         onclick="toggleSelectAll()">
 </th>
-
+ 
 <th>PROCESSOR</th>
 <th>MODE</th>
 <th>DN NUMBER</th>
 <th>BOX ID</th>
-<th>UNIT PER TRAY</th>
-<th>BOX QTY</th>
+<th>SECOND BOX ID</th>
+ 
+<th class="calcHeader">UNIT PER TRAY</th>
+<th class="calcHeader">BOX QTY</th>
+<th class="calcHeader">PROCESS QTY</th>
+<th class="calcHeader">NO OF ROW</th>
+<th>TOTAL QTY</th>
 <th>CUSTOMER QTY</th>
-<th>NO OF ROW</th>
-<th>MOTHER BOX QTY</th>
-<th>CUSTOMER BOX QTY</th>
 <th>TIME STAMP</th>
-
+ 
 </tr>
-
+ 
 </thead>
-
+ 
 <tbody>
-
+ 
 </tbody>
-
+ 
 </table>
 <script>
-    
-    function exportCSV(){
-
-    const logs =
-        JSON.parse(
-            localStorage.getItem("matrixLogs")
-        ) || [];
-
-let csv =
-"Processor,Mode,DN Number,Box ID,Unit Tray,Box Qty,Customer Qty,No Row,Mother Box Qty,Customer Box Qty,Time Stamp\n";
-
-const visibleRows =
-document.querySelectorAll(
-    "#historyTable tbody tr"
-);
-
-
-visibleRows.forEach(row => {
-
-    if(row.style.display === "none"){
-        return;
-    }
-
-    const cells =
-    row.querySelectorAll("td");
-
-csv += `"${cells[1].innerText}","${cells[2].innerText}","${cells[3].innerText}","${cells[4].innerText}","${cells[5].innerText}","${cells[6].innerText}","${cells[7].innerText}","${cells[8].innerText}","${cells[9].innerText}","${cells[10].innerText}","${cells[11].innerText}"\n`;});
-
-
-const blob =
-        new Blob([csv],
-        {type:'text/csv'});
-
-    const link =
-        document.createElement("a");
-
-    link.href =
-        URL.createObjectURL(blob);
-
-link.download =
-"MatrixHistory_" +
-new Date().toISOString().slice(0,10) +
-".csv";
-    link.click();
-
-}
-function filterHistory(){
-
-    document.getElementById(
-    "selectAll"
-).checked = false;
-
-    let searchText =
-        document.getElementById("searchInput")
-        .value
-        .toUpperCase();
-
-    let modeFilter =
-        document.getElementById("modeFilter")
-        .value;
-
-    let dateFilter =
-        document.getElementById("dateFilter")
-        .value;
-
-    let rows =
-        document.querySelectorAll(
-            "#historyTable tbody tr"
-        );
-
-    rows.forEach(function(row){
-
-        let text =
-            row.textContent.toUpperCase();
-
-        let mode =
-            row.dataset.mode || "";
-
-        let date =
-            row.dataset.date || "";
-
-        let matchSearch =
-            text.includes(searchText);
-
-        let matchMode =
-            modeFilter === "all" ||
-            mode === modeFilter;
-
-let matchDate =
-dateFilter === "" ||
-date === dateFilter;
-
-row.style.display =
-            (
-                matchSearch &&
-                matchMode &&
-                matchDate
-            )
-            ? ""
-            : "none";
-
-    });
-
-    }
-
-    function formatDate(dateString){
-
-    const d = new Date(dateString);
-
-    const month = d.getMonth() + 1;
-    const day = d.getDate();
-    const year = d.getFullYear();
-
-    return `${month}/${day}/${year}`;
-
-}
-
-
-function toggleSelectAll(){
-
-    const checked =
-    document.getElementById("selectAll")
-    .checked;
-
-    document
-    .querySelectorAll(
-        "#historyTable tbody tr"
-    )
-    .forEach(row => {
-
-        if(row.style.display !== "none"){
-
-            const checkbox =
-            row.querySelector(
-                ".recordCheck"
-            );
-
-            if(checkbox){
-                checkbox.checked = checked;
-            }
-
-        }
-
-    });
-
-}
-
-
-
-function deleteSelected(){
-
-    const checkedRows =
-    document.querySelectorAll(
-        ".recordCheck:checked"
-    );
-
-    if(checkedRows.length === 0){
-
-        alert("Please select record");
-
-        return;
-
-    }
-
-    const supervisor =
-    prompt("Enter Supervisor ID");
-
-    if(supervisor !== "DEVELOPER"){
-
-        alert("Access Denied");
-
-        return;
-
-    }
-
-    const password =
-    prompt("Enter Password");
-
-    if(password !== "3BERADIK"){
-
-        alert("Wrong Password");
-
-        return;
-
-    }
-
-checkedRows.forEach(async cb => {
-
-    await window.deleteDoc(
-        window.doc(
-            window.db,
-            "matrixLogs",
-            cb.value
-        )
-    );
-
-});
-
-alert(
-    "Selected record deleted"
-);
-
-}
-
-document
-.getElementById("searchInput")
-.addEventListener(
-    "input",
-    filterHistory
-);
-
-document.getElementById(
-    "searchInput"
-).focus();
-
-function printTable(){
-
-    
-
+ 
+function exportCSV(){
+ 
     const visibleRows =
-    Array.from(
-        document.querySelectorAll(
-            "#historyTable tbody tr"
-        )
-    ).filter(
-        row => row.style.display !== "none"
+    document.querySelectorAll(
+        "#historyTable tbody tr"
     );
-
-let printContent = `
-<html>
-
-<head>
-
-<title>Matrix Calculator History</title>
-
-<style>
-
-@page{
-    size: landscape;
-    margin: 10mm;
-}
-
-body{
-    font-family: Arial,sans-serif;
-    margin:0;
-    padding:10px;
-}
-
-h1{
-    text-align:center;
-    color:#d40511;
-    margin-bottom:10px;
-}
-
-.info{
-    text-align:center;
-    margin-bottom:15px;
-    font-size:14px;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th{
-    background:#4f81bd;
-    color:white;
-    border:1px solid #000;
-    padding:8px;
-    font-size:12px;
-}
-
-td{
-    border:1px solid #000;
-    padding:6px;
-    text-align:center;
-    font-size:11px;
-}
-
-tr:nth-child(even){
-    background:#f5f5f5;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<h1>MATRIX CALCULATOR HISTORY</h1>
-
-<div class="info">
-    Total Record: ${visibleRows.length}
-</div>
-
-<table>
-
-<tr>
-    <th>PROCESSOR</th>
-    <th>MODE</th>
-    <th>DN NUMBER</th>
-    <th>BOX ID</th>
-    <th>UNIT/TRAY</th>
-    <th>BOX QTY</th>
-    <th>CUSTOMER QTY</th>
-    <th>NO ROW</th>
-    <th>MOTHER BOX</th>
-    <th>CUSTOMER BOX</th>
-    <th>TIME STAMP</th>
-</tr>
-`;
-
+ 
+    let csv =
+"Processor,Mode,DN Number,Box ID,Second Box ID,Unit Tray,Box Qty,Process Qty,No Row,Total Qty,Customer Qty,Time Stamp\n";
+ 
     visibleRows.forEach(row => {
-
+ 
+        if(row.style.display === "none"){
+            return;
+        }
+ 
         const cells =
         row.querySelectorAll("td");
-
-        printContent += `
-            <tr>
-                <td>${cells[1].innerText}</td>
-                <td>${cells[2].innerText}</td>
-                <td>${cells[3].innerText}</td>
-                <td>${cells[4].innerText}</td>
-                <td>${cells[5].innerText}</td>
-                <td>${cells[6].innerText}</td>
-                <td>${cells[7].innerText}</td>
-                <td>${cells[8].innerText}</td>
-                <td>${cells[9].innerText}</td>
-                <td>${cells[10].innerText}</td>
-                <td>${cells[11].innerText}</td>
-            </tr>
-        `;
+ 
+        csv += `"${cells[1].innerText}","${cells[2].innerText}","${cells[3].innerText}","${cells[4].innerText}","${cells[5].innerText}","${cells[6].innerText}","${cells[7].innerText}","${cells[8].innerText}","${cells[9].innerText}","${cells[10].innerText}","${cells[11].innerText}","${cells[12].innerText}"\n`;
+ 
     });
-
+ 
+    const blob =
+    new Blob([csv],
+    {type:'text/csv'});
+ 
+    const link =
+    document.createElement("a");
+ 
+    link.href =
+    URL.createObjectURL(blob);
+ 
+    link.download =
+    "MatrixHistory_" +
+    new Date().toISOString().slice(0,10) +
+    ".csv";
+ 
+    link.click();
+ 
+}
+function filterHistory(){
+ 
+    document.getElementById(
+ 
+    "selectAll"
+ 
+).checked = false;
+ 
+    let searchText =
+ 
+        document.getElementById("searchInput")
+ 
+        .value
+ 
+        .toUpperCase();
+ 
+    let modeFilter =
+ 
+        document.getElementById("modeFilter")
+ 
+        .value;
+ 
+    let dateFilter =
+ 
+        document.getElementById("dateFilter")
+ 
+        .value;
+ 
+    let rows =
+ 
+        document.querySelectorAll(
+ 
+            "#historyTable tbody tr"
+ 
+        );
+ 
+    rows.forEach(function(row){
+ 
+        let text =
+ 
+            row.textContent.toUpperCase();
+ 
+        let mode =
+ 
+            row.dataset.mode || "";
+ 
+        let date =
+ 
+            row.dataset.date || "";
+ 
+        let matchSearch =
+ 
+            text.includes(searchText);
+ 
+        let matchMode =
+ 
+            modeFilter === "all" ||
+ 
+            mode === modeFilter;
+ 
+let matchDate =
+ 
+dateFilter === "" ||
+ 
+date === dateFilter;
+ 
+row.style.display =
+ 
+            (
+ 
+                matchSearch &&
+ 
+                matchMode &&
+ 
+                matchDate
+ 
+            )
+ 
+            ? ""
+ 
+            : "none";
+ 
+    });
+ 
+    }
+ 
+    function formatDate(dateString){
+ 
+    const d = new Date(dateString);
+ 
+    const month = d.getMonth() + 1;
+ 
+    const day = d.getDate();
+ 
+    const year = d.getFullYear();
+ 
+    return `${month}/${day}/${year}`;
+ 
+}
+ 
+ 
+function toggleSelectAll(){
+ 
+    const checked =
+ 
+    document.getElementById("selectAll")
+ 
+    .checked;
+ 
+    document
+ 
+    .querySelectorAll(
+ 
+        "#historyTable tbody tr"
+ 
+    )
+ 
+    .forEach(row => {
+ 
+        if(row.style.display !== "none"){
+ 
+            const checkbox =
+ 
+            row.querySelector(
+ 
+                ".recordCheck"
+ 
+            );
+ 
+            if(checkbox){
+ 
+                checkbox.checked = checked;
+ 
+            }
+ 
+        }
+ 
+    });
+ 
+}
+ 
+ 
+function deleteSelected(){
+ 
+    const checkedRows =
+ 
+    document.querySelectorAll(
+ 
+        ".recordCheck:checked"
+ 
+    );
+ 
+    if(checkedRows.length === 0){
+ 
+        alert("Please select record");
+ 
+        return;
+ 
+    }
+ 
+    const supervisor =
+ 
+    prompt("Enter Supervisor ID");
+ 
+    if(supervisor !== "DEVELOPER"){
+ 
+        alert("Access Denied");
+ 
+        return;
+ 
+    }
+ 
+    const password =
+ 
+    prompt("Enter Password");
+ 
+    if(password !== "3BERADIK"){
+ 
+        alert("Wrong Password");
+ 
+        return;
+ 
+    }
+ 
+checkedRows.forEach(async cb => {
+ 
+    await window.deleteDoc(
+ 
+        window.doc(
+ 
+            window.db,
+ 
+            "matrixLogs",
+ 
+            cb.value
+ 
+        )
+ 
+    );
+ 
+});
+ 
+alert(
+ 
+    "Selected record deleted"
+ 
+);
+ 
+}
+ 
+document
+ 
+.getElementById("searchInput")
+ 
+.addEventListener(
+ 
+    "input",
+ 
+    filterHistory
+ 
+);
+ 
+document.getElementById(
+ 
+    "searchInput"
+ 
+).focus();
+ 
+function printTable(){
+ 
+   
+ 
+    const visibleRows =
+ 
+    Array.from(
+ 
+        document.querySelectorAll(
+ 
+            "#historyTable tbody tr"
+ 
+        )
+ 
+    ).filter(
+ 
+        row => row.style.display !== "none"
+ 
+    );
+ 
+let printContent = `
+<html>
+ 
+<head>
+ 
+<title>Matrix Calculator History</title>
+ 
+<style>
+ 
+@page{
+ 
+    size: landscape;
+ 
+    margin: 10mm;
+ 
+}
+ 
+body{
+ 
+    font-family: Arial,sans-serif;
+ 
+    margin:0;
+ 
+    padding:10px;
+ 
+}
+ 
+h1{
+ 
+    text-align:center;
+ 
+    color:#d40511;
+ 
+    margin-bottom:10px;
+ 
+}
+ 
+.info{
+ 
+    text-align:center;
+ 
+    margin-bottom:15px;
+ 
+    font-size:14px;
+ 
+}
+ 
+table{
+ 
+    width:100%;
+ 
+    border-collapse:collapse;
+ 
+}
+ 
+th{
+ 
+    background:#4f81bd;
+ 
+    color:white;
+ 
+    border:1px solid #000;
+ 
+    padding:8px;
+ 
+    font-size:12px;
+ 
+}
+ 
+.calcHeader{
+    background:#00a651 !important;
+    color:white;
+}
+td{
+ 
+    border:1px solid #000;
+ 
+    padding:6px;
+ 
+    text-align:center;
+ 
+    font-size:11px;
+ 
+}
+ 
+tr:nth-child(even){
+ 
+    background:#f5f5f5;
+ 
+}
+ 
+</style>
+ 
+</head>
+ 
+<body>
+ 
+<h1>MATRIX CALCULATOR HISTORY</h1>
+ 
+<div class="info">
+ 
+    Total Record: ${visibleRows.length}
+</div>
+ 
+<table>
+ 
+<tr>
+<th>PROCESSOR</th>
+<th>MODE</th>
+<th>DN NUMBER</th>
+<th>BOX ID</th>
+<th>SECOND BOX ID</th>
+<th class="calcHeader">UNIT PER TRAY</th>
+<th class="calcHeader">BOX QTY</th>
+<th class="calcHeader">PROCESS QTY</th>
+<th class="calcHeader">NO OF ROW</th><th>TOTAL QTY</th>
+<th>CUSTOMER QTY</th>
+<th>TIME STAMP</th>
+</tr>
+`;
+ 
+    visibleRows.forEach(row => {
+ 
+        const cells =
+ 
+        row.querySelectorAll("td");
+ 
+printContent += `
+<tr>
+<td>${cells[1].innerText}</td>
+<td>${cells[2].innerText}</td>
+<td>${cells[3].innerText}</td>
+<td>${cells[4].innerText}</td>
+<td>${cells[5].innerText}</td>
+<td>${cells[6].innerText}</td>
+<td>${cells[7].innerText}</td>
+<td class="processQtyCell">${cells[8].innerText}</td>
+<td>${cells[9].innerText}</td>
+<td>${cells[10].innerText}</td>
+<td class="customerQtyCell">${cells[11].innerText}</td>
+<td>${cells[12].innerText}</td>
+</tr>
+`;
+    });
+ 
 printContent += `
 </table>
-
+ 
 </body>
-
+ 
 </html>
+ 
 `;
-
+ 
     const printWindow =
+ 
     window.open("", "", "width=1200,height=800");
-
+ 
     printWindow.document.write(printContent);
-
+ 
 printWindow.document.close();
-
+ 
 setTimeout(() => {
+ 
     printWindow.print();
+ 
 }, 500);
-
+ 
 }
-
-
+ 
+ 
 </script>
-
+ 
 <script type="module">
-
+ 
 import { initializeApp }
+ 
 from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-
+ 
 import {
+ 
     getFirestore,
+ 
     collection,
+ 
     onSnapshot,
+ 
     query,
+ 
     orderBy,
+ 
     deleteDoc,
+ 
     doc
+ 
 }
+ 
 from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-
+ 
+ 
 const firebaseConfig = {
-
+ 
     apiKey: "API_KEY_KAU",
-
+ 
     authDomain:
+ 
     "dhl-matrix-calculator.firebaseapp.com",
-
+ 
     projectId:
+ 
     "dhl-matrix-calculator",
-
+ 
     storageBucket:
+ 
     "dhl-matrix-calculator.firebasestorage.app",
-
+ 
     messagingSenderId:
+ 
     "86678106931",
-
+ 
     appId:
+ 
     "1:86678106931:web:25405e1489dfcc6ae54446"
-
+ 
 };
-
+ 
 const app =
+ 
 initializeApp(firebaseConfig);
-
+ 
 const db =
+ 
 getFirestore(app);
+ 
 window.db = db;
+ 
 window.deleteDoc = deleteDoc;
+ 
 window.doc = doc;
-
+ 
 loadFirebaseHistory();
-
-
+ 
+ 
 function loadFirebaseHistory(){
-
+ 
 onSnapshot(
+ 
     query(
+ 
         collection(db,"matrixLogs"),
+ 
         orderBy("timestamp","desc")
+ 
     ),
+ 
     (snapshot) => {
-
-
+ 
+ 
             let logs = [];
-
+ 
             snapshot.forEach(doc => {
-
+ 
                 logs.push({
+ 
              id: doc.id,
+ 
                  ...doc.data()
+ 
                 });
+ 
             });
-
+ 
             const tbody =
+ 
             document.querySelector(
+ 
                 "#historyTable tbody"
+ 
             );
-
+ 
             tbody.innerHTML = "";
-
+ 
             document.getElementById(
+ 
                 "recordCount"
+ 
             ).innerHTML =
+ 
             `Total Record: ${logs.length}`;
-
+ 
 logs.forEach((log,index) => {
-
+ 
                 const row =
+ 
                 document.createElement("tr");
-
+ 
                 row.dataset.mode =
+ 
                 log.mode || "";
-
+ 
                 const datePart =
+ 
                 (log.dateTime || "").split(",")[0];
-
+ 
                 const parts = datePart.split("/");
-
+ 
                     row.dataset.date =
+ 
                 parts[2] + "-" +
+ 
                 parts[1].padStart(2,"0") + "-" +
+ 
                 parts[0].padStart(2,"0");
+ 
                 row.innerHTML = `
-                    <td>
-                       <input
+<td>
+<input
+ 
                     type="checkbox"
+ 
                     class="recordCheck"
+ 
                     value="${log.id}">
-                    </td>
-
+</td>
+ 
                     <td>${log.name || ""}</td>
-
-                    <td>${
-                        log.mode === "dn"
-                        ? "DN PROCESS"
-                        : "RECOUNT PROCESS"
-                    }</td>
-
+ 
+<td>${
+    log.mode === "dn"
+    ? "DN PROCESS"
+    : log.mode === "rma"
+    ? "RMA (INBOUND)"
+    : "RECOUNT PROCESS"
+}</td>
+ 
                     <td>${log.dnNo || ""}</td>
-                    <td>${log.boxId || ""}</td>
-                    <td>${log.unitTray || ""}</td>
-                    <td>${log.boxQty || ""}</td>
-                    <td>${log.childQty || ""}</td>
-                    <td>${log.rowQty || ""}</td>
-                    <td>${log.motherTotal || ""}</td>
-                    <td>${log.childTotal || ""}</td>
-                    <td>${log.dateTime || ""}</td>
-                `;
-
+<td>${log.boxId || ""}</td>
+ 
+<td>${log.secondBoxId || ""}</td>
+ 
+<td>${log.unitTray || ""}</td>
+<td>${log.boxQty || ""}</td>
+ 
+<td class="processQtyCell">${
+    log.mode === "dn"
+        ? (log.childQty || "")
+        : (log.boxQty || "")
+}</td>
+ 
+<td>${log.rowQty || ""}</td>
+ 
+<td>${log.motherTotal || ""}</td>
+ 
+<td class="customerQtyCell">${
+    log.mode === "dn"
+        ? (log.childTotal || "")
+        : ""
+}</td>
+<td>${log.dateTime || ""}</td>                `;
+ 
                 tbody.appendChild(row);
-
+ 
             });
-
+ 
             console.log(
+ 
                 "Firebase History Loaded ✅"
+ 
             );
-
+ 
         }
+ 
     );
-
+ 
 }
-
+ 
 </script>
-
+ 
 </body>
 </html>
